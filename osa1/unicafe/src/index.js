@@ -17,6 +17,24 @@ const Statistic = ({ text, value }) => {
   )
 }
 
+const Statistics = ({ good, neutral, bad }) => {
+  const count = good + neutral + bad
+  const score = good - bad
+
+  if (count === 0) return <p>Ei yhtään palautetta annettu</p>
+
+  return (
+    <>
+      <Statistic text="hyvä" value={good} />
+      <Statistic text="neutraali" value={neutral} />
+      <Statistic text="huono" value={bad} />
+      <Statistic text="yhteensä" value={count} />
+      <Statistic text="keskiarvo" value={score / count} />
+      <Statistic text="positiivisia" value={(good / count) * 100 + '%'} />
+    </>
+  )
+}
+
 const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
@@ -29,9 +47,7 @@ const App = () => {
       <Button text="neutraali" handleClick={() => setNeutral(neutral + 1)} />
       <Button text="huono" handleClick={() => setBad(bad + 1)} />
       <Header text="statistiikka" />
-      <Statistic text="hyvä" value={good} />
-      <Statistic text="neutraali" value={neutral} />
-      <Statistic text="huono" value={bad} />
+      <Statistics good={good} neutral={neutral} bad={bad} />
     </>
   )
 }
