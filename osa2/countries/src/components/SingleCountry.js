@@ -8,9 +8,9 @@ const SingleCountry = ({ country }) => {
   useEffect(() => {
     axios
       .get(
-        `https://api.apixu.com/v1/current.json?key=8986b25bdff5402fa7d200322192901&q=${
-          country.capital
-        }`
+        `https://api.apixu.com/v1/current.json?key=${
+          process.env.REACT_APP_APIXU_KEY
+        }&q=${country.capital}`
       )
       .then((response) => {
         setWeather(response.data)
