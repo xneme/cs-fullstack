@@ -1,9 +1,9 @@
 import React from 'react'
 
-const PersonForm = (props) => {
+const ContactForm = (props) => {
   return (
     <div>
-      <form onSubmit={props.addPerson}>
+      <form onSubmit={props.addContact}>
         <div>
           nimi:{' '}
           <input value={props.newName} onChange={props.nameChangeHandler} />
@@ -20,4 +20,4 @@ const PersonForm = (props) => {
   )
 }
 
-export default PersonForm
+export default ContactForm

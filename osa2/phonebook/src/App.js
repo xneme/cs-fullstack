@@ -1,29 +1,23 @@
-import React, { useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import Filter from './components/Filter'
-import PersonForm from './components/PersonForm'
-import Persons from './components/Persons'
-import axios from 'axios'
+import ContactForm from './components/ContactForm'
+import Contacts from './components/Contacts'
+import contactService from './services/contacts'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Martti Tienari', number: '040-123456' },
-    { name: 'Arto Järvinen', number: '040-123456' },
-    { name: 'Lea Kutvonen', number: '040-123456' }
-  ])
+  const [contacts, setContacts] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then(response => {
-      setPersons(response.data)
+    contactService.getAll().then((initialContacts) => {
+      setContacts(initialContacts)
     })
   }, [])
-  
 
-  const personsToShow = persons.filter(
-    (person) => person.name.toLowerCase().indexOf(filter.toLowerCase()) !== -1
+  const contactsToShow = contacts.filter(
+    (contact) => contact.name.toLowerCase().indexOf(filter.toLowerCase()) !== -1
   )
 
   const handleNameChange = (event) => {
@@ -41,19 +35,67 @@ const App = () => {
     setFilter(event.target.value)
   }
 
-  const addPerson = (event) => {
+  const addContact = (event) => {
     event.preventDefault()
     // console.log('Adding: ', newName, newNumber)
-    if (
-      persons.some(
-        (person) => person.name.toLowerCase() === newName.toLowerCase()
-      )
-    ) {
-      alert(`${newName} on jo luettelossa`)
+    const existingContact = contacts.find(
+      (contact) => contact.name.toLowerCase() === newName.toLowerCase()
+    )
+    if (existingContact) {
+      updateContact(existingContact)
     } else {
-      setPersons(persons.concat({ name: newName, number: newNumber }))
+      contactService
+        .create({ name: newName, number: newNumber })
+        .then((newContact) => {
+          setContacts(contacts.concat(newContact))
+        })
       setNewName('')
       setNewNumber('')
+    }
+  }
+
+  const updateContact = (existingContact) => {
+    if (
+      window.confirm(
+        `${
+          existingContact.name
+        } on jo luettelossa, korvataanko vanha numero uudella?`
+      )
+    ) {
+      contactService
+        .update(existingContact.id, { ...existingContact, number: newNumber })
+        .then((returnedContact) => {
+          setContacts(
+            contacts.map((contact) =>
+              contact.id !== existingContact.id ? contact : returnedContact
+            )
+          )
+        })
+        .catch((error) => {
+          alert(
+            `${
+              existingContact.name
+            } on valitettavasti jo poistettu palvelimelta`
+          )
+          setContacts(
+            contacts.filter((contact) => contact.id !== existingContact.id)
+          )
+        })
+      setNewName('')
+      setNewNumber('')
+    }
+  }
+
+  const removeContact = (contact) => {
+    if (window.confirm(`Poistetaanko ${contact.name}?`)) {
+      contactService
+        .remove(contact.id)
+        .then((id) => {
+          setContacts(contacts.filter((contact) => contact.id !== id))
+        })
+        .catch((error) => {
+          setContacts(contacts.filter((c) => c.id !== contact.id))
+        })
     }
   }
 
@@ -65,17 +107,17 @@ const App = () => {
 
       <h3>lisää uusi</h3>
 
-      <PersonForm
+      <ContactForm
         newName={newName}
         nameChangeHandler={handleNameChange}
         newNumber={newNumber}
         numberChangeHandler={handleNumberChange}
-        addPerson={addPerson}
+        addContact={addContact}
       />
 
       <h3>Numerot</h3>
 
-      <Persons persons={personsToShow} />
+      <Contacts contacts={contactsToShow} removeContact={removeContact} />
     </div>
   )
 }

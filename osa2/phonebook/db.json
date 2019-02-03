@@ -1,8 +1,8 @@
 {
-  "persons": [
+  "contacts": [
     {
       "name": "Arto Hellas",
-      "number": "040-123456",
+      "number": "040-123458",
       "id": 1
     },
     {
