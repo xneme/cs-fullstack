@@ -3,12 +3,16 @@ import Filter from './components/Filter'
 import ContactForm from './components/ContactForm'
 import Contacts from './components/Contacts'
 import contactService from './services/contacts'
+import Notification from './components/Notification'
+import Error from './components/Error'
 
 const App = () => {
   const [contacts, setContacts] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     contactService.getAll().then((initialContacts) => {
@@ -49,6 +53,9 @@ const App = () => {
         .then((newContact) => {
           setContacts(contacts.concat(newContact))
         })
+      setNotificationMessage(`Lisättiin ${newName}`)
+      setTimeout(() => setNotificationMessage(null), 5000)
+
       setNewName('')
       setNewNumber('')
     }
@@ -70,13 +77,16 @@ const App = () => {
               contact.id !== existingContact.id ? contact : returnedContact
             )
           )
+          setNotificationMessage(`Päivitettiin ${existingContact.name}`)
+          setTimeout(() => setNotificationMessage(null), 5000)
         })
         .catch((error) => {
-          alert(
+          setErrorMessage(
             `${
               existingContact.name
             } on valitettavasti jo poistettu palvelimelta`
           )
+          setTimeout(() => setErrorMessage(null), 5000)
           setContacts(
             contacts.filter((contact) => contact.id !== existingContact.id)
           )
@@ -92,9 +102,13 @@ const App = () => {
         .remove(contact.id)
         .then((id) => {
           setContacts(contacts.filter((contact) => contact.id !== id))
+          setNotificationMessage(`Poistettiin ${contact.name}`)
+          setTimeout(() => setNotificationMessage(null), 5000)
         })
         .catch((error) => {
           setContacts(contacts.filter((c) => c.id !== contact.id))
+          setErrorMessage(`${contact.name} on jo poistettu palvelimelta`)
+          setTimeout(() => setErrorMessage(null), 5000)
         })
     }
   }
@@ -102,6 +116,10 @@ const App = () => {
   return (
     <div>
       <h2>Puhelinluettelo</h2>
+
+      <Error message={errorMessage} />
+
+      <Notification message={notificationMessage} />
 
       <Filter filter={filter} filterChangeHandler={handleFilterChange} />
 
