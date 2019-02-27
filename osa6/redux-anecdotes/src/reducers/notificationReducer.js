@@ -9,14 +9,14 @@ const reducer = (state = '', action) => {
   }
 }
 
-export const showNotification = (notification) => {
+export const showNotificationAction = (notification) => {
   return {
     type: 'SHOW_NOTIFICATION',
     data: notification
   }
 }
 
-export const clearNotification = () => {
+export const clearNotificationAction = () => {
   return {
     type: 'CLEAR_NOTIFICATION'
   }

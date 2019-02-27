@@ -7,7 +7,7 @@ const reducer = (state = '', action) => {
   }
 }
 
-export const changeFilter = (filter) => {
+export const changeFilterAction = (filter) => {
   return {
     type: 'CHANGE_FILTER',
     data: filter

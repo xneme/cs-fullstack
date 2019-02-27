@@ -36,14 +36,14 @@ const reducer = (state = initialState, action) => {
   }
 }
 
-export const createAnecdote = (anecdote) => {
+export const createAnecdoteAction = (anecdote) => {
   return {
     type: 'NEW_ANECDOTE',
     data: asObject(anecdote)
   }
 }
 
-export const vote = (id) => {
+export const voteAction = (id) => {
   return {
     type: 'VOTE',
     data: { id }
