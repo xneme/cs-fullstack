@@ -5,18 +5,23 @@ import {
   showNotificationAction,
   clearNotificationAction
 } from '../reducers/notificationReducer'
+import anecdoteService from '../services/anecdotes'
 
 const AnecdoteForm = ({
   createAnecdote,
   showNotification,
   clearNotification
 }) => {
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
-    createAnecdote(event.target.newAnecdote.value)
-    showNotification(`You added '${event.target.newAnecdote.value}'`)
-    setTimeout(() => clearNotification(), 5000)
+
+    const content = event.target.newAnecdote.value
     event.target.newAnecdote.value = ''
+    const savedAnecdote = await anecdoteService.createNew(content)
+    createAnecdote(savedAnecdote)
+
+    showNotification(`You added '${savedAnecdote.content}'`)
+    setTimeout(() => clearNotification(), 5000)
   }
 
   return (
