@@ -1,5 +1,4 @@
 import React from 'react'
-import blogService from '../services/blogs'
 import Togglable from './Togglable'
 import { useField } from '../hooks'
 import { connect } from 'react-redux'
@@ -7,13 +6,9 @@ import {
   successNotificationAction,
   errorNotificationAction
 } from '../reducers/notificationReducer'
+import { createBlogAction } from '../reducers/blogReducer'
 
-const BlogForm = ({
-  blogs,
-  setBlogs,
-  successNotification,
-  errorNotification
-}) => {
+const BlogForm = ({ successNotification, errorNotification, createBlog }) => {
   const { reset: titleReset, ...title } = useField('text')
   const { reset: authorReset, ...author } = useField('text')
   const { reset: urlReset, ...url } = useField('text')
@@ -24,19 +19,17 @@ const BlogForm = ({
     blogFormRef.current.toggleVisibility()
 
     try {
-      const response = await blogService.create({
+      createBlog({
         title: title.value,
         author: author.value,
         url: url.value
       })
 
-      setBlogs(blogs.concat(response))
+      successNotification(`a new blog ${title.value} added`)
+
       titleReset()
       authorReset()
       urlReset()
-
-      console.log(`a new blog ${response.title} added`)
-      successNotification(`a new blog ${response.title} added`)
     } catch (exception) {
       console.log(exception)
       if (exception.response) {
@@ -69,7 +62,8 @@ const BlogForm = ({
 
 const mapDispatchToProps = {
   successNotification: successNotificationAction,
-  errorNotification: errorNotificationAction
+  errorNotification: errorNotificationAction,
+  createBlog: createBlogAction
 }
 
 export default connect(

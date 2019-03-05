@@ -1,9 +1,10 @@
 import React from 'react'
-import loginService from '../services/login'
-import blogService from '../services/blogs'
 import { useField } from '../hooks'
+import { connect } from 'react-redux'
+import { loginUserAction } from '../reducers/userReducer'
+import { errorNotificationAction } from '../reducers/notificationReducer'
 
-const LoginForm = ({ setUser, setErrorMessage }) => {
+const LoginForm = ({ loginUser, errorNotification }) => {
   const { reset: usernameReset, ...username } = useField('text')
   const { reset: passwordReset, ...password } = useField('password')
 
@@ -11,20 +12,11 @@ const LoginForm = ({ setUser, setErrorMessage }) => {
     event.preventDefault()
 
     try {
-      const user = await loginService.login({
-        username: username.value,
-        password: password.value
-      })
-
-      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-      blogService.setToken(user.token)
-      usernameReset()
-      passwordReset()
-      setUser(user)
+      await loginUser(username.value, password.value)
+      //usernameReset()
+      //passwordReset()
     } catch (exception) {
-      console.log('error happened:', exception)
-      setErrorMessage(exception.response.data.error)
-      setTimeout(() => setErrorMessage(null), 3000)
+      errorNotification(exception.response.data.error)
     }
   }
 
@@ -46,4 +38,12 @@ const LoginForm = ({ setUser, setErrorMessage }) => {
   )
 }
 
-export default LoginForm
+const mapDispatchToProps = {
+  loginUser: loginUserAction,
+  errorNotification: errorNotificationAction
+}
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(LoginForm)

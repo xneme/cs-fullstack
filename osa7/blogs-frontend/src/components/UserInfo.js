@@ -1,11 +1,10 @@
 import React from 'react'
-import blogService from '../services/blogs'
+import { connect } from 'react-redux'
+import { clearUserAction } from '../reducers/userReducer'
 
-const UserInfo = ({ user, setUser }) => {
+const UserInfo = ({ user, clearUser }) => {
   const handleLogout = () => {
-    window.localStorage.removeItem('loggedBlogappUser')
-    setUser(null)
-    blogService.setToken('')
+    clearUser()
   }
 
   return (
@@ -16,4 +15,17 @@ const UserInfo = ({ user, setUser }) => {
   )
 }
 
-export default UserInfo
+const mapStateToProps = (state) => {
+  return {
+    user: state.user
+  }
+}
+
+const mapDispatchToProps = {
+  clearUser: clearUserAction
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UserInfo)
