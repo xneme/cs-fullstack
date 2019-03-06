@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/polyfill": "^7.2.5",
     "axios": "^0.18.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.2",
@@ -15,8 +16,8 @@
     "semantic-ui-react": "^0.85.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "webpack-dev-server --mode=development",
+    "build": "webpack --mode=production",
     "test": "react-scripts test",
     "lint": "eslint .",
     "eject": "react-scripts eject",
@@ -29,14 +30,24 @@
   "browserslist": [
     ">0.2%",
     "not dead",
-    "not ie <= 11",
+    "not ie <= 12",
     "not op_mini all"
   ],
   "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/plugin-transform-regenerator": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.5",
+    "css-loader": "^2.1.0",
     "cypress": "^3.1.5",
     "eslint-plugin-jest": "^22.3.0",
     "eslint-plugin-react": "^7.12.4",
     "jest-dom": "^3.1.2",
-    "react-testing-library": "^5.9.0"
+    "react-testing-library": "^5.9.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-server": "^3.2.1"
   }
 }
