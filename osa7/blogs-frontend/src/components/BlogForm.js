@@ -7,6 +7,7 @@ import {
   errorNotificationAction
 } from '../reducers/notificationReducer'
 import { createBlogAction } from '../reducers/blogReducer'
+import { Form, Button, Input } from 'semantic-ui-react'
 
 const BlogForm = ({ successNotification, errorNotification, createBlog }) => {
   const { reset: titleReset, ...title } = useField('text')
@@ -41,21 +42,23 @@ const BlogForm = ({ successNotification, errorNotification, createBlog }) => {
   return (
     <Togglable buttonLabel="new blog" ref={blogFormRef}>
       <h2>create new</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          title:
-          <input {...title} />
-        </div>
-        <div>
-          author:
-          <input {...author} />
-        </div>
-        <div>
-          url:
-          <input {...url} />
-        </div>
-        <button type="submit">create</button>
-      </form>
+      <Form onSubmit={handleSubmit}>
+        <Form.Field>
+          <label>title</label>
+          <Input {...title} />
+        </Form.Field>
+        <Form.Field>
+          <label>author</label>
+          <Input {...author} />
+        </Form.Field>
+        <Form.Field>
+          <label>url</label>
+          <Input {...url} />
+        </Form.Field>
+        <Button positive type="submit">
+          create
+        </Button>
+      </Form>
     </Togglable>
   )
 }

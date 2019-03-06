@@ -3,10 +3,15 @@ import { useField } from '../hooks'
 import { connect } from 'react-redux'
 import { loginUserAction } from '../reducers/userReducer'
 import { errorNotificationAction } from '../reducers/notificationReducer'
+import { Form, Button, Input } from 'semantic-ui-react'
 
 const LoginForm = ({ loginUser, errorNotification }) => {
   const { reset: usernameReset, ...username } = useField('text')
   const { reset: passwordReset, ...password } = useField('password')
+
+  const inputStyle = {
+    width: '300px'
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -23,17 +28,17 @@ const LoginForm = ({ loginUser, errorNotification }) => {
   return (
     <div className="loginForm">
       <h2>Log in to application</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input {...username} />
-        </div>
-        <div>
-          password
-          <input {...password} />
-        </div>
-        <button type="submit">Login</button>
-      </form>
+      <Form onSubmit={handleLogin}>
+        <Form.Field>
+          <label>username</label>
+          <Input {...username} style={inputStyle} />
+        </Form.Field>
+        <Form.Field>
+          <label>password</label>
+          <Input {...password} style={inputStyle} />
+        </Form.Field>
+        <Button type="submit">Login</Button>
+      </Form>
     </div>
   )
 }

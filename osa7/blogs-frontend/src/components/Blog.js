@@ -1,46 +1,98 @@
 import React, { useState } from 'react'
+import {
+  successNotificationAction,
+  errorNotificationAction
+} from '../reducers/notificationReducer'
+import { likeBlogAction, removeBlogAction } from '../reducers/blogReducer'
+import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
+import Comments from './Comments'
+import { Button } from 'semantic-ui-react'
 
-const Blog = ({ blog, handleLike, handleRemove, user }) => {
-  const [expanded, setExpanded] = useState(false)
+const Blog = ({
+  blog,
+  likeBlog,
+  removeBlog,
+  user,
+  successNotification,
+  errorNotification
+}) => {
+  const [deleted, setDeleted] = useState(false)
 
-  const toggleExpanded = () => {
-    setExpanded(!expanded)
+  const handleLike = async () => {
+    try {
+      likeBlog(blog)
+      successNotification(`You voted ${blog.title}.`)
+    } catch (exception) {
+      console.log(exception)
+      errorNotification(exception)
+    }
   }
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
+  const handleRemove = async () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      try {
+        await removeBlog(blog)
+        successNotification(`${blog.title} removed.`)
+        setDeleted(true)
+      } catch (exception) {
+        console.log(exception)
+        errorNotification(exception)
+      }
+    }
   }
 
-  if (expanded) {
-    return (
-      <div className="blog" style={blogStyle}>
-        <div onClick={toggleExpanded}>
-          {blog.title} - {blog.author}
-        </div>
-        <a href={blog.url}>{blog.url}</a>
-        <div>
-          {blog.likes} likes
-          <button onClick={handleLike}>like</button>
-        </div>
-        <div>added by {blog.user.name}</div>
-        {user.username === blog.user.username ? (
-          <button onClick={handleRemove}>remove</button>
-        ) : (
-          ''
-        )}
-      </div>
-    )
-  } else {
-    return (
-      <div className="blog" onClick={toggleExpanded} style={blogStyle}>
+  if (deleted) {
+    return <Redirect to="/" />
+  }
+
+  if (!blog) {
+    return null
+  }
+
+  return (
+    <div className="blog">
+      <h2>
         {blog.title} - {blog.author}
+      </h2>
+      <a href={blog.url}>{blog.url}</a>
+      <div>
+        <Button
+          onClick={handleLike}
+          content="Like"
+          icon="heart"
+          label={{ basic: true, content: blog.likes, pointing: 'right' }}
+          labelPosition="left"
+        />
       </div>
-    )
+      <div>added by {blog.user.name}</div>
+      {user.username === blog.user.username ? (
+        <Button negative onClick={handleRemove}>
+          remove
+        </Button>
+      ) : null}
+      <Comments comments={blog.comments} blogId={blog.id} />
+    </div>
+  )
+}
+
+const mapStateToProps = (state, ownProps) => {
+  const blog = state.blogs.find((blog) => blog.id === ownProps.id)
+  return {
+    blogs: state.blogs,
+    user: state.user,
+    blog
   }
 }
 
-export default Blog
+const mapDispatchToProps = {
+  successNotification: successNotificationAction,
+  errorNotification: errorNotificationAction,
+  likeBlog: likeBlogAction,
+  removeBlog: removeBlogAction
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Blog)

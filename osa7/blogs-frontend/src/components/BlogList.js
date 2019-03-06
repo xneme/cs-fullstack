@@ -1,73 +1,34 @@
 import React from 'react'
-import Blog from './Blog'
-import {
-  successNotificationAction,
-  errorNotificationAction
-} from '../reducers/notificationReducer'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { likeBlogAction, removeBlogAction } from '../reducers/blogReducer'
+import { List } from 'semantic-ui-react'
 
-const BlogList = ({
-  blogs,
-  user,
-  successNotification,
-  errorNotification,
-  likeBlog,
-  removeBlog
-}) => {
-  const handleLike = async (blog) => {
-    try {
-      likeBlog(blog)
-      successNotification(`You voted ${blog.title}.`)
-    } catch (exception) {
-      console.log(exception)
-      errorNotification(exception)
-    }
-  }
-
-  const handleRemove = async (blog) => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      try {
-        removeBlog(blog)
-        successNotification(`${blog.title} removed.`)
-      } catch (exception) {
-        console.log(exception)
-        errorNotification(exception)
-      }
-    }
-  }
-
+const BlogList = ({ blogs }) => {
   return (
     <div>
       <h2>Blogs</h2>
-      {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          handleLike={() => handleLike(blog)}
-          handleRemove={() => handleRemove(blog)}
-          user={user}
-        />
-      ))}
+      <List divided relaxed>
+        {blogs.map((blog) => (
+          <List.Item key={blog.id}>
+            <List.Content>
+              <List.Header>
+                <Link to={`/blogs/${blog.id}`}>
+                  {blog.title} {blog.author}
+                </Link>
+              </List.Header>
+              <List.Description>{blog.likes} likes</List.Description>
+            </List.Content>
+          </List.Item>
+        ))}
+      </List>
     </div>
   )
 }
 
 const mapStateToProps = (state) => {
   return {
-    blogs: state.blogs,
-    user: state.user
+    blogs: state.blogs
   }
 }
 
-const mapDispatchToProps = {
-  successNotification: successNotificationAction,
-  errorNotification: errorNotificationAction,
-  likeBlog: likeBlogAction,
-  removeBlog: removeBlogAction
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BlogList)
+export default connect(mapStateToProps)(BlogList)

@@ -7,10 +7,12 @@ import Notifications from './components/Notifications'
 import Users from './components/Users'
 import Menu from './components/Menu'
 import User from './components/User'
+import Blog from './components/Blog'
 import { initializeBlogsAction } from './reducers/blogReducer'
 import { initializeUsersAction } from './reducers/usersReducer'
 import { setUserAction } from './reducers/userReducer'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { Container } from 'semantic-ui-react'
 
 const App = ({ initializeBlogs, initializeUsers, user, setUser, users }) => {
   useEffect(() => {
@@ -27,14 +29,14 @@ const App = ({ initializeBlogs, initializeUsers, user, setUser, users }) => {
 
   if (user === null) {
     return (
-      <div>
+      <Container>
         <Notifications />
         <LoginForm />
-      </div>
+      </Container>
     )
   } else {
     return (
-      <div>
+      <Container>
         <Router>
           <div>
             <Menu />
@@ -63,9 +65,14 @@ const App = ({ initializeBlogs, initializeUsers, user, setUser, users }) => {
               path="/users/:id"
               render={({ match }) => <User id={match.params.id} />}
             />
+            <Route
+              exact
+              path="/blogs/:id"
+              render={({ match }) => <Blog id={match.params.id} />}
+            />
           </div>
         </Router>
-      </div>
+      </Container>
     )
   }
 }
