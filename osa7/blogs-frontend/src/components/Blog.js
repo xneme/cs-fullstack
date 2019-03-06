@@ -68,7 +68,7 @@ const Blog = ({
       </div>
       <div>added by {blog.user.name}</div>
       {user.username === blog.user.username ? (
-        <Button negative onClick={handleRemove}>
+        <Button negative onClick={handleRemove} id="deleteButton">
           remove
         </Button>
       ) : null}

@@ -61,6 +61,15 @@ describe('Blogs app', function() {
       cy.contains('Rant about testing')
     })
 
+    it('added blog can be deleted', function() {
+      addBlog()
+      cy.contains('A blog about testing Someone Famous').click()
+      cy.get('#deleteButton').click()
+      cy.get('#blogList')
+        .contains('A blog about testing Someone Famous')
+        .should('not.exist')
+    })
+
     it('user can log out to front page', function() {
       cy.get('#logoutButton').click()
       cy.contains('Log in to application')

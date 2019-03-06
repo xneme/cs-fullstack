@@ -7,7 +7,7 @@ const BlogList = ({ blogs }) => {
   return (
     <div>
       <h2>Blogs</h2>
-      <List divided relaxed>
+      <List divided relaxed id="blogList">
         {blogs.map((blog) => (
           <List.Item key={blog.id}>
             <List.Content>
