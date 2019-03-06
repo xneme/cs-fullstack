@@ -63,6 +63,7 @@ const Blog = ({
           icon="heart"
           label={{ basic: true, content: blog.likes, pointing: 'right' }}
           labelPosition="left"
+          id="likeButton"
         />
       </div>
       <div>added by {blog.user.name}</div>

@@ -47,7 +47,7 @@ export const errorNotificationAction = (message, time = 5000) => {
   return async (dispatch) => {
     const id = Math.floor(Math.random() * 1000)
     dispatch({
-      type: 'ADD_SUCCESS',
+      type: 'ADD_ERROR',
       data: {
         message,
         id

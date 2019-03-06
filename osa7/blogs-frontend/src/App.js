@@ -14,7 +14,7 @@ import { setUserAction } from './reducers/userReducer'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { Container } from 'semantic-ui-react'
 
-const App = ({ initializeBlogs, initializeUsers, user, setUser, users }) => {
+const App = ({ initializeBlogs, initializeUsers, user, setUser }) => {
   useEffect(() => {
     initializeBlogs()
     initializeUsers()

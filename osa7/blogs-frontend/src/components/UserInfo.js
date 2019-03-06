@@ -10,7 +10,10 @@ const UserInfo = ({ user, clearUser }) => {
 
   return (
     <div>
-      {user.name} logged in <Button onClick={handleLogout}>Logout</Button>
+      {user.name} logged in{' '}
+      <Button onClick={handleLogout} id="logoutButton">
+        Logout
+      </Button>
     </div>
   )
 }

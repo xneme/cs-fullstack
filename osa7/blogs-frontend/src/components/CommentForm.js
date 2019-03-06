@@ -13,8 +13,10 @@ const CommentForm = ({ commentBlog, blogId }) => {
   return (
     <div>
       <Form onSubmit={onSubmit}>
-        <Input type="text" name="comment" />
-        <Button type="submit">add comment</Button>
+        <Input type="text" name="comment" id="commentInput" />
+        <Button type="submit" id="commentSubmitButton">
+          add comment
+        </Button>
       </Form>
     </div>
   )

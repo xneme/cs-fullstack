@@ -18,10 +18,10 @@ const LoginForm = ({ loginUser, errorNotification }) => {
 
     try {
       await loginUser(username.value, password.value)
-      //usernameReset()
-      //passwordReset()
     } catch (exception) {
       errorNotification(exception.response.data.error)
+      usernameReset()
+      passwordReset()
     }
   }
 
@@ -31,13 +31,15 @@ const LoginForm = ({ loginUser, errorNotification }) => {
       <Form onSubmit={handleLogin}>
         <Form.Field>
           <label>username</label>
-          <Input {...username} style={inputStyle} />
+          <Input {...username} style={inputStyle} id="usernameInput" />
         </Form.Field>
         <Form.Field>
           <label>password</label>
-          <Input {...password} style={inputStyle} />
+          <Input {...password} style={inputStyle} id="passwordInput" />
         </Form.Field>
-        <Button type="submit">Login</Button>
+        <Button type="submit" id="loginButton">
+          Login
+        </Button>
       </Form>
     </div>
   )

@@ -45,17 +45,17 @@ const BlogForm = ({ successNotification, errorNotification, createBlog }) => {
       <Form onSubmit={handleSubmit}>
         <Form.Field>
           <label>title</label>
-          <Input {...title} />
+          <Input {...title} id="titleInput" />
         </Form.Field>
         <Form.Field>
           <label>author</label>
-          <Input {...author} />
+          <Input {...author} id="authorInput" />
         </Form.Field>
         <Form.Field>
           <label>url</label>
-          <Input {...url} />
+          <Input {...url} id="urlInput" />
         </Form.Field>
-        <Button positive type="submit">
+        <Button positive type="submit" id="blogSubmitButton">
           create
         </Button>
       </Form>
