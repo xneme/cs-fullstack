@@ -89,7 +89,7 @@ const App = () => {
         <div>
           <ButtonGroup setView={setView} />
           <Authors result={allAuthorsResult} />
-          <BirthYearForm editAuthor={editAuthor} />
+          <BirthYearForm result={allAuthorsResult} editAuthor={editAuthor} />
         </div>
       )
     case 'BOOKS':

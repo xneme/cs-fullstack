@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const BirthYearForm = ({ editAuthor }) => {
+const BirthYearForm = ({ result, editAuthor }) => {
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
 
@@ -12,16 +12,23 @@ const BirthYearForm = ({ editAuthor }) => {
     setBorn('')
   }
 
+  if (result.loading) {
+    return <div>loading...</div>
+  }
+
   return (
     <div>
-      <h3>set Birthyear</h3>
+      <h3>set birthyear</h3>
       <div>
-        <label>name</label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        <select value={name} onChange={(e) => setName(e.target.value)}>
+          {result.data.allAuthors.map((author) => {
+            return (
+              <option key={author.id} value={author.name}>
+                {author.name}
+              </option>
+            )
+          })}
+        </select>
       </div>
       <div>
         <label>born</label>
