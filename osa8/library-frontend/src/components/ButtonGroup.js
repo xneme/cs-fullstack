@@ -7,6 +7,9 @@ const ButtonGroup = ({ setView, token, logout }) => {
         <button onClick={() => setView('AUTHORS')}>authors</button>
         <button onClick={() => setView('BOOKS')}>books</button>
         <button onClick={() => setView('ADD_BOOK')}>add book</button>
+        <button onClick={() => setView('RECOMMENDATIONS')}>
+          recommendations
+        </button>
         <button onClick={logout}>logout</button>
       </div>
     )

@@ -23,6 +23,11 @@ const Books = ({ result }) => {
   return (
     <div>
       <h2>books</h2>
+      {filter ? (
+        <p>
+          in genre <b>{filter}</b>
+        </p>
+      ) : null}
       <table>
         <tbody>
           <tr>

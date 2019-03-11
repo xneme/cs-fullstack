@@ -8,6 +8,7 @@ import BirthYearForm from './components/BirthYearForm'
 import Notification from './components/Notification'
 import ButtonGroup from './components/ButtonGroup'
 import LoginForm from './components/LoginForm'
+import Recommendations from './components/Recommendations'
 
 const ALL_AUTHORS = gql`
   {
@@ -30,6 +31,16 @@ const ALL_BOOKS = gql`
       }
       published
       genres
+    }
+  }
+`
+
+const ME = gql`
+  {
+    me {
+      id
+      username
+      favoriteGenre
     }
   }
 `
@@ -80,6 +91,7 @@ const App = () => {
   const client = useApolloClient()
   const allAuthorsResult = useQuery(ALL_AUTHORS)
   const allBooksResult = useQuery(ALL_BOOKS)
+  const currentUserResult = useQuery(ME)
   const addBook = useMutation(CREATE_BOOK, {
     refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }]
   })
@@ -91,6 +103,7 @@ const App = () => {
   const [view, setView] = useState('AUTHORS')
   const [notification, setNotification] = useState(null)
   const [token, setToken] = useState(null)
+  const [user, setUser] = useState(null)
 
   const handleError = (error) => {
     console.log(error)
@@ -102,7 +115,7 @@ const App = () => {
     setToken(null)
     localStorage.clear()
     client.resetStore()
-    if (view === 'ADD_BOOK') {
+    if (view === 'ADD_BOOK' || view === 'RECOMMENDATIONS') {
       setView('AUTHORS')
     }
   }
@@ -110,6 +123,12 @@ const App = () => {
   useEffect(() => {
     setToken(window.localStorage.getItem('library-app-token'))
   }, [])
+
+  useEffect(() => {
+    currentUserResult.refetch()
+    const currentUser = currentUserResult.data.me
+    setUser(currentUser)
+  }, [login, logout])
 
   switch (view) {
     case 'AUTHORS':
@@ -152,6 +171,13 @@ const App = () => {
             handleError={handleError}
             setView={setView}
           />
+        </div>
+      )
+    case 'RECOMMENDATIONS':
+      return (
+        <div>
+          <ButtonGroup setView={setView} token={token} logout={logout} />
+          <Recommendations user={user} />
         </div>
       )
     default:
