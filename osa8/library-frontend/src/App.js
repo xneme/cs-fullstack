@@ -177,7 +177,7 @@ const App = () => {
       return (
         <div>
           <ButtonGroup setView={setView} token={token} logout={logout} />
-          <Recommendations user={user} />
+          <Recommendations user={user} refetchTrigger={allBooksResult} />
         </div>
       )
     default:

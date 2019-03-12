@@ -16,7 +16,7 @@ const BOOKS_BY_GENRE = gql`
   }
 `
 
-const Recommendations = ({ user }) => {
+const Recommendations = ({ user, refetchTrigger }) => {
   if (!user) {
     console.log('user not found')
     return <div>loading...</div>
@@ -34,6 +34,10 @@ const Recommendations = ({ user }) => {
       setBooks(booksByGenre.data.allBooks)
     }
   }, [booksByGenre])
+
+  useEffect(() => {
+    booksByGenre.refetch()
+  }, [refetchTrigger])
 
   if (booksByGenre.loading) {
     return <div>loading...</div>
