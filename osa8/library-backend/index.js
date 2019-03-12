@@ -11,6 +11,7 @@ const Author = require('./models/author')
 const User = require('./models/user')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
+const DataLoader = require('dataloader')
 
 const pubsub = new PubSub()
 
@@ -103,10 +104,7 @@ const resolvers = {
     me: (root, args, context) => context.currentUser
   },
   Author: {
-    bookCount: async (root) => {
-      const booksByAuthor = await Book.find({ author: root.id })
-      return booksByAuthor.length
-    }
+    bookCount: ({ id }, args, { countLoader }) => countLoader.load(id)
   },
   Mutation: {
     addBook: async (root, args, { currentUser }) => {
@@ -184,19 +182,31 @@ const resolvers = {
   }
 }
 
+const currentUserExtractor = async ({ req }) => {
+  const auth = req ? req.headers.authorization : null
+  if (auth && auth.toLowerCase().startsWith('bearer ')) {
+    const decodedToken = jwt.verify(
+      auth.substring('bearer '.length),
+      JWT_SECRET
+    )
+    const currentUser = await User.findById(decodedToken.id)
+    return currentUser
+  }
+}
+
+const countLoader = new DataLoader(async (authorIds) => {
+  const books = await Book.find({})
+  return authorIds.map(
+    (id) => books.filter((book) => book.author.toString() === id).length
+  )
+})
+
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: async ({ req }) => {
-    const auth = req ? req.headers.authorization : null
-    if (auth && auth.toLowerCase().startsWith('bearer ')) {
-      const decodedToken = jwt.verify(
-        auth.substring('bearer '.length),
-        JWT_SECRET
-      )
-      const currentUser = await User.findById(decodedToken.id)
-      return { currentUser }
-    }
+  context: {
+    currentUserExtractor,
+    countLoader
   }
 })
 
