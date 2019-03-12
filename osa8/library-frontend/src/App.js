@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { useQuery, useMutation, useApolloClient } from 'react-apollo-hooks'
+import {
+  useQuery,
+  useMutation,
+  useApolloClient,
+  useSubscription
+} from 'react-apollo-hooks'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import BookForm from './components/BookForm'
@@ -87,6 +92,20 @@ const LOGIN = gql`
   }
 `
 
+const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      id
+      title
+      author {
+        name
+      }
+      published
+      genres
+    }
+  }
+`
+
 const App = () => {
   const client = useApolloClient()
   const allAuthorsResult = useQuery(ALL_AUTHORS)
@@ -99,6 +118,26 @@ const App = () => {
     refetchQueries: [{ query: ALL_AUTHORS }]
   })
   const login = useMutation(LOGIN)
+
+  const includedIn = (set, object) => {
+    set.map((b) => b.id).includes(object.id)
+  }
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ client, subscriptionData }) => {
+      const addedBook = subscriptionData.data.bookAdded
+      window.alert(`new book ${addedBook.title} added`)
+
+      const booksInStore = client.readQuery({ query: ALL_BOOKS })
+      if (!includedIn(booksInStore.allBooks, addedBook)) {
+        booksInStore.allBooks.push(addedBook)
+        client.writeQuery({
+          query: ALL_BOOKS,
+          data: booksInStore
+        })
+      }
+    }
+  })
 
   const [view, setView] = useState('AUTHORS')
   const [notification, setNotification] = useState(null)
